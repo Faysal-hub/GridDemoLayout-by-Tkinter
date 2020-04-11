@@ -1,38 +1,50 @@
 import tkinter
 
+import os
+
 mainWindow = tkinter.Tk()
 
-mainWindow.title("Hello World")
+mainWindow.title("Grid Demo")
 mainWindow.geometry('640x480-8-200')
 
-label = tkinter.Label(mainWindow, text="Hello World")
-label.grid(row=0, column=0)
+label= tkinter.Label(mainWindow, text="Tkinter Grid Demo")
+label.grid(row=0, column=0, columnspan=3)
 
-leftFrame = tkinter.Frame(mainWindow)
-leftFrame.grid(row=1, column=1)
-
-canvas = tkinter.Canvas(leftFrame, relief='raised', borderwidth=1)
-canvas.grid(row=1, column=0)
-
-rightFrame = tkinter.Frame(mainWindow)
-rightFrame.grid(row=1, column=2, sticky='n')
-button1 = tkinter.Button(rightFrame, text="button1")
-button2 = tkinter.Button(rightFrame, text="button2")
-button3 = tkinter.Button(rightFrame, text="button3")
-button1.grid(row=0, column=0)
-button2.grid(row=1, column=0)
-button3.grid(row=2, column=0)
-
-# configure the columns
 mainWindow.columnconfigure(0, weight=1)
 mainWindow.columnconfigure(1, weight=1)
-mainWindow.grid_columnconfigure(2, weight=1)
+mainWindow.columnconfigure(2, weight=3)
+mainWindow.columnconfigure(3, weight=3)
+mainWindow.columnconfigure(4, weight=3)
+mainWindow.rowconfigure(0, weight=1)
+mainWindow.rowconfigure(1, weight=10)
+mainWindow.rowconfigure(2, weight=1)
+mainWindow.rowconfigure(3, weight=3)
+mainWindow.rowconfigure(4, weight=3)
 
-leftFrame.config(relief='sunken', borderwidth=1)
-rightFrame.config(relief='sunken', borderwidth=1)
-leftFrame.grid(sticky='ns')
-rightFrame.grid(sticky='new')
+fileList = tkinter.Listbox(mainWindow)
+fileList.grid(row=1, column=0, sticky='nsew', rowspan=2)
+fileList.config(border=2, relief='sunken')
+for zone in os.listdir('/usr/bin'): # '/Windows/System32'
+    fileList.insert(tkinter.END, zone)
 
-rightFrame.columnconfigure(0, weight=1)
-button2.grid(sticky='ew')
+listScroll = tkinter.Scrollbar(mainWindow, orient=tkinter.VERTICAL, command=fileList.yview)
+listScroll.grid(row=1, column=1, sticky='nsw', rowspan=2)
+fileList['yscrollcommand'] = listScroll.set
+
+# frame for the radio buttons
+optionFrame = tkinter.LabelFrame(mainWindow, text="File Details")
+optionFrame.grid(row=1, column=2, sticky='ne')
+
+rbValue = tkinter.IntVar()
+rbValue.set(2)
+# Radio buttons
+radio1 = tkinter.Radiobutton(optionFrame, text="Filename", value=1, variable=rbValue)
+radio2 = tkinter.Radiobutton(optionFrame, text="Path", value=2, variable=rbValue)
+radio3 = tkinter.Radiobutton(optionFrame, text="Timestamp", value=3, variable=rbValue)
+radio1.grid(row=0, column=0, sticky='w')
+radio2.grid(row=1, column=0, sticky='w')
+radio3.grid(row=2, column=0, sticky='w')
+
 mainWindow.mainloop()
+
+print(rbValue.get())
